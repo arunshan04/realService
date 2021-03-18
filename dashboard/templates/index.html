@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+{% block title %}RealService{% endblock %}
+{% block content %}
+
+{% for service in serviceList %}
+
+<h3><samp>{{service|safe}}</samp></h3>
+<table class="table table-hover table-bordered" id="impala.ControlService_metrics">
+  <tbody>
+  <tr>
+    <td>
+      <table class="table table-hover">
+        <tr>
+          <th>Queue Size</th>
+          <th>Idle Threads</th>
+          <th>Current Memory Usage</th>
+          <th>Peak Memory Usage</th>
+          <th>RPCs Rejected due to Queue Overflow</th>
+        </tr>
+        <tr>
+          <td id="impala.ControlService_queue_size">0</td>
+          <td id="impala.ControlService_idle_threads">4</td>
+          <td id="impala.ControlService_mem_usage">0</td>
+          <td id="impala.ControlService_mem_peak">66.99 KB</td>
+          <td id="impala.ControlService_rpcs_queue_overflow">0</td>
+        </tr>
+      </table>
+      <table class="table table-hover">
+        <tr>
+          <th>Incoming Queueing Time</th>
+          <td id="impala.ControlService_incoming_queue_time" colspan=2>Count: 997329, min / max: 6.000us / 14.329ms, 25th %-ile: 12.000us, 50th %-ile: 16.000us, 75th %-ile: 29.000us, 90th %-ile: 39.000us, 95th %-ile: 47.000us, 99.9th %-ile: 2.356ms
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td>
+    
+      <table class="table table-bordered table-hover">
+        <tr><td colspan=2>
+          <strong>Method: <i>RemoteShutdown</i></strong>
+        </td></tr>
+        <tr>
+          <td>Handler Latency</td>
+          <td class="RemoteShutdown_handler_latency">Count: 0, min / max: 0.000ns / 0.000ns, 25th %-ile: 0.000ns, 50th %-ile: 0.000ns, 75th %-ile: 0.000ns, 90th %-ile: 0.000ns, 95th %-ile: 0.000ns, 99.9th %-ile: 0.000ns</td>
+        </tr>
+        <tr>
+          <td>Payload Size</td>
+          <td class="RemoteShutdown_payload_size">Count: 0, min / max: 0 / 0, 25th %-ile: 0, 50th %-ile: 0, 75th %-ile: 0, 90th %-ile: 0, 95th %-ile: 0, 99.9th %-ile: 0</td>
+        </tr>
+      </table>
+    
+      <table class="table table-bordered table-hover">
+        <tr><td colspan=2>
+          <strong>Method: <i>CancelQueryFInstances</i></strong>
+        </td></tr>
+        <tr>
+          <td>Handler Latency</td>
+          <td class="CancelQueryFInstances_handler_latency">Count: 33526, min / max: 35.000us / 88.110ms, 25th %-ile: 54.000us, 50th %-ile: 64.000us, 75th %-ile: 76.000us, 90th %-ile: 94.000us, 95th %-ile: 109.000us, 99.9th %-ile: 784.000us</td>
+        </tr>
+        <tr>
+          <td>Payload Size</td>
+          <td class="CancelQueryFInstances_payload_size">Count: 33526, min / max: 79.00 B / 81.00 B, 25th %-ile: 80.00 B, 50th %-ile: 81.00 B, 75th %-ile: 81.00 B, 90th %-ile: 81.00 B, 95th %-ile: 81.00 B, 99.9th %-ile: 81.00 B</td>
+        </tr>
+      </table>
+    
+      <table class="table table-bordered table-hover">
+        <tr><td colspan=2>
+          <strong>Method: <i>ReportExecStatus</i></strong>
+        </td></tr>
+        <tr>
+          <td>Handler Latency</td>
+          <td class="ReportExecStatus_handler_latency">Count: 174792, min / max: 25.000us / 457.778ms, 25th %-ile: 62.000us, 50th %-ile: 80.000us, 75th %-ile: 956.000us, 90th %-ile: 1.224ms, 95th %-ile: 1.512ms, 99.9th %-ile: 2.656ms</td>
+        </tr>
+        <tr>
+          <td>Payload Size</td>
+          <td class="ReportExecStatus_payload_size">Count: 174792, min / max: 2.94 KB / 54.36 KB, 25th %-ile: 3.03 KB, 50th %-ile: 3.07 KB, 75th %-ile: 18.33 KB, 90th %-ile: 24.25 KB, 95th %-ile: 26.28 KB, 99.9th %-ile: 39.19 KB</td>
+        </tr>
+      </table>
+    
+    </td>
+  </tr>
+  </tbody>
+</table>
+{% endfor %}
+
+<script>
+
+  
+    function startEvent(){
+      if (!window.EventSource) {    alert("The browser doesn't support EventSource.");return;}
+      eventSource = new EventSource('lastUpdated');
+      eventSource.onopen = function(e) {console.log("Event: open");};
+
+      eventSource.onerror = function(e) {console.log("Event: error");
+        if (this.readyState == EventSource.CONNECTING) {
+          console.log(`Reconnecting (readyState=${this.readyState})...`);
+        } else {
+          console.log("Error has occured.");
+        }
+      };
+
+      eventSource.addEventListener('updated', function(e) {
+              var d = new Date(0); 
+                d.setUTCSeconds(JSON.parse(e.data))
+                document.getElementById('last-updated').textContent=d
+      });
+
+      eventSource.onmessage = function(e) {
+        console.log("Event: message, data: " + e.data);
+      };
+
+
+    }
+
+
+      function stop() { // when "Stop" button pressed
+        eventSource.close();  
+        console.log("eventSo        urce.close()");     
+      }     
+      
+
+
+
+
+
+$(document).ready(function() {
+
+  
+  var _selector = document.getElementById('toggle');
+    _selector.addEventListener('change', function (event) {
+        if (_selector.checked) {
+          startEvent()
+        } else {
+            console.log('Closed')
+            stop()
+        }
+    });
+
+    if (_selector.checked){
+      startEvent()
+    }
+
+
+});
+
+
+</script>
+
+
+{% endblock %}

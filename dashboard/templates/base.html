@@ -1,0 +1,80 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>{% block title %}{% endblock %}</title>
+  <script src="{% static "www/jquery/jquery-1.12.4.min.js" %}"></script>
+  <script src="{% static "www/bootstrap/js/bootstrap.min.js" %}"></script>
+  <script src="{% static "www/scripts/util.js" %}"</script>
+  <link rel="stylesheet" type="text/css" href="{% static "www/datatables.min.css" %}" />
+  <script type="text/javascript" src="{% static "www/datatables.min.js" %}" ></script>
+  <link href="{% static "www/bootstrap/css/bootstrap.min.css" %}" rel='stylesheet' media='screen'>
+  <style>
+    @media (min-width: 1300px) {
+      #nav-options {
+          width: 95%;
+      }
+
+
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="navbar navbar-default navbar-static-top" id="top" role="banner">
+      <div id="nav-options" class="container">
+        <div class="navbar-header">
+          <a class='navbar-brand' href='/realService/'>RealTimeService</a>
+        </div>
+        <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+          <ul class="nav navbar-nav">         
+            <li><a href="/realService/">/</a></li>
+            <li><a href="/info">/info</a></li>
+            <li><a href="/logs">/logs</a></li>
+            <li><a href="/metrics">/metrics</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <div class='container' style='width:90%'>
+
+      <h2>RPC durations</h2>
+
+<p class="lead">This page shows the durations of all RPCs served by this
+ <samp>impalad</samp> process.
+</p>
+
+<label >
+  <input type="checkbox" checked="true" id="toggle"  />
+  <span id="refresh_on" >Auto-refresh on</span>
+</label>  Last updated: <span id="last-updated" transition: width 1s;></span>
+
+
+<h2>KRPC Services</h2>
+
+
+  {% if messages %}
+  <ul class="messages">
+    {% for message in messages %}
+      <li class="{{ message.tags }}">
+        {{ message|safe }}
+        <a href="#" class="close">x</a>
+      </li>
+    {% endfor %}
+  </ul>
+{% endif %}
+
+
+
+  <div id="content">
+    {% block content %}
+    {% endblock %}
+  </div>
+
+
+</div>
+</body>
+</html>
